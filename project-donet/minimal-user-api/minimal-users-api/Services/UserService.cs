@@ -23,6 +23,7 @@ public class UserService : IUserService
 
   public async Task<User> CreateUser(CreateUserDTO userDTO)
   {
+    await ValidateUserExists(userDTO.Email);
     var user = _mapper.Map<User>(userDTO);
     await _userRepository.CreateAsync(user);
     if (!await _userRepository.SaveChangesAsync())
@@ -63,5 +64,14 @@ public class UserService : IUserService
       throw new DatabaseException("Error deleting the user from the database");
     }
     return true;
+  }
+
+  private async Task ValidateUserExists(string email)
+  {
+    var user = await _userRepository.UserExistsAsync(email);
+    if (user)
+    {
+      throw new ResourceNotFoundException($"User with email {email} already exists");
+    }
   }
 }

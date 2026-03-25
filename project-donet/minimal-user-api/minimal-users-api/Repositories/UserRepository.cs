@@ -23,13 +23,15 @@ public class UserRepository : IUserRepository
 
   public async Task<IEnumerable<User>> GetAllAsync()
   {
-    return await _context.Users.Where(u => u.IsActive).ToListAsync();
+    return await _context.Users.Where(u => u.IsActive).AsNoTracking().ToListAsync();
   }
 
-  public Task<User> GetByIdAsync(Guid id)
+  public async Task<User> GetByIdAsync(Guid id)
   {
-    var user = _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.IsActive) ?? throw new ResourceNotFoundException($"User with id {id} not found");
-    return user!;
+    var user = await _context.Users
+      .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
+
+    return user ?? throw new ResourceNotFoundException($"User with id {id} not found");
   }
 
   public Task UpdateAsync(User user)
@@ -48,5 +50,15 @@ public class UserRepository : IUserRepository
   public async Task<bool> SaveChangesAsync()
   {
     return await _context.SaveChangesAsync() > 0;
+  }
+
+  public async Task<bool> UserExistsAsync(string email)
+  {
+    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    if (user is not null)
+    {
+      throw new DatabaseException($"User with email {email} already exists");
+    }
+    return false;
   }
 }
