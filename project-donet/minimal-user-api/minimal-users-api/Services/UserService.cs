@@ -12,11 +12,13 @@ public class UserService : IUserService
 
   private readonly IUserRepository _userRepository;
   private readonly IMapper _mapper;
+  private readonly IUpdateBuilderService _updateBuilderService;
 
-  public UserService(IUserRepository userRepository, IMapper mapper)
+  public UserService(IUserRepository userRepository, IMapper mapper, IUpdateBuilderService updateBuilderService)
   {
     _userRepository = userRepository;
     _mapper = mapper;
+    _updateBuilderService = updateBuilderService;
   }
 
   public async Task<User> CreateUser(CreateUserDTO userDTO)
@@ -42,8 +44,8 @@ public class UserService : IUserService
 
   public async Task<User> UpdateUser(Guid id, UpdateUserDTO updateUserDTO)
   {
-    var dbUser = await _userRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"User with id {id} not found");
-    _mapper.Map(updateUserDTO, dbUser);
+    var dbUser = await _userRepository.GetByIdAsync(id) ?? throw new ResourceNotFoundException($"User with id {id} not found");
+    _updateBuilderService.BuildUpdates(updateUserDTO, dbUser);
     await _userRepository.UpdateAsync(dbUser);
     if (!await _userRepository.SaveChangesAsync())
     {
@@ -54,7 +56,7 @@ public class UserService : IUserService
 
   public async Task<bool> DeleteUser(Guid id)
   {
-    var dbUser = await _userRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"User with id {id} not found");
+    var dbUser = await _userRepository.GetByIdAsync(id) ?? throw new ResourceNotFoundException($"User with id {id} not found");
     await _userRepository.DeleteAsync(dbUser);
     if (!await _userRepository.SaveChangesAsync())
     {

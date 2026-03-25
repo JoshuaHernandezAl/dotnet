@@ -20,8 +20,5 @@ public class UserProfile : Profile
 
         CreateMap<List<User>, GetAllUsersResponseDTO>()
             .ConstructUsing(src => new GetAllUsersResponseDTO(src));
-
-        CreateMap<UpdateUserDTO, User>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

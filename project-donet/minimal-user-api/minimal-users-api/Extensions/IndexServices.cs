@@ -17,6 +17,7 @@ public static class IndexServices
 
     //Services
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IUpdateBuilderService, UpdateBuilderService>();
 
     // Repositories
     services.AddScoped<IUserRepository, UserRepository>();
@@ -25,7 +26,7 @@ public static class IndexServices
     services.AddValidatorsFromAssembly(typeof(IndexServices).Assembly);
 
     // AutoMapper
-    services.AddAutoMapper(cfg=>{}, typeof(UserProfile).Assembly);
+    services.AddAutoMapper(cfg => { }, typeof(UserProfile).Assembly);
 
     return services;
   }

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using minimal_users_api.Exceptions;
 using minimal_users_api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.AllRoutesMapper();
 
 app.UseHttpsRedirection();
