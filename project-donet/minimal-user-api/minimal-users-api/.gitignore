@@ -1,0 +1,42 @@
+## [ Estándar de .NET ]
+bin/
+obj/
+publish/
+dist/
+
+## [ VS Code ]
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+## [ User Secrets & Configuración Local ]
+appsettings.Development.json
+appsettings.Local.json
+*.user
+*.userosscache
+*.sln.doccache
+
+## [ macOS ]
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+Network Trash Folder
+Temporary Items
+.apdisk
+
+## [ Docker ]
+.dockerignore
+# Solo ignora si no quieres subir la configuración de dev
+# docker-compose.override.yml
+
+## [ Entity Framework ]
+# Si no quieres subir los scripts SQL generados por las migraciones
+*.sql
+
+## [ Herramientas de .NET ]
+.dotnet/
+.tools/
